@@ -20,8 +20,7 @@
 - name: Get module versions
   shell: >
     docker exec {{ logos_node_cont_name }}
-    logoscore --config-dir /var/lib/logos/config
-    list-modules --json
+    logosctl module ls
   register: logos_node_modules_list_raw
   changed_when: false
   failed_when: false
