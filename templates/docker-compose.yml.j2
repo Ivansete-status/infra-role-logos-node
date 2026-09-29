@@ -26,6 +26,7 @@ services:
     ports:
 {% if logos_node_delivery_enabled | bool %}
       - '{{ logos_node_delivery_p2p_tcp_port }}:{{ logos_node_delivery_p2p_tcp_port }}/tcp'
+      - '{{ logos_node_delivery_p2p_udp_port }}:{{ logos_node_delivery_p2p_udp_port }}/udp'
       - '{{ logos_node_delivery_discv5_udp_port }}:{{ logos_node_delivery_discv5_udp_port }}/udp'
 {% if logos_node_delivery_websocket_enabled %}
       - '{{ logos_node_delivery_websocket_port }}:{{ logos_node_delivery_websocket_port }}/tcp'

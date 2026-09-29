@@ -62,6 +62,7 @@ logos_node_delivery_max_pure_libp2p_peers: 0
 
 # Ports
 logos_node_delivery_p2p_tcp_port: 30303
+logos_node_delivery_p2p_udp_port: 30303
 logos_node_delivery_discv5_udp_port: 9000
 logos_node_delivery_websocket_port: 8000
 
