@@ -2,7 +2,7 @@
 - name: Query delivery node info
   shell: >
     docker exec {{ logos_node_cont_name }}
-    logoscore --config-dir /var/lib/logos/config
+    logosctl
     call delivery_module getNodeInfo {{ item }}
   register: logos_node_delivery_info
   changed_when: false

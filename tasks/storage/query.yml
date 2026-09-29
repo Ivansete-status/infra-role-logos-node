@@ -2,7 +2,7 @@
 - name: Get storage debug info
   shell: >
     docker exec {{ logos_node_cont_name }}
-    logoscore --config-dir /var/lib/logos/config
+    logosctl
     call storage_module debug
   register: logos_node_storage_debug_raw
   changed_when: false
