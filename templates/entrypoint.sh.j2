@@ -1,27 +1,22 @@
 #!/usr/bin/env bash
 
-# Clean stale daemon state from previous crash
-rm -f /var/lib/logos/config/daemon/state.json
-
-logoscore -D -m ./modules --config-dir /var/lib/logos/config --persistence-path /var/lib/logos/persistence &
+logosctl daemon start &
 DAEMON_PID=$!
 
-until logoscore --config-dir /var/lib/logos/config status > /dev/null 2>&1; do
+until logosctl status > /dev/null 2>&1; do
   sleep 1
 done
 
 {% for module in logos_node_base_modules + logos_node_modules %}
-logoscore --config-dir /var/lib/logos/config load-module {{ module }} || echo "WARNING: failed to load {{ module }}"
+logosctl module load {{ module }} || echo "WARNING: failed to load {{ module }}"
 {% endfor %}
 
 {% for cmd in logos_node_module_calls %}
-logoscore --config-dir /var/lib/logos/config call {{ cmd }} || echo "WARNING: failed: {{ cmd }}"
+logosctl call {{ cmd }} || echo "WARNING: failed: {{ cmd }}"
 {% endfor %}
 {% if logos_node_metrics_enabled | bool %}
 
-# Modules implement either collectMetrics() or collectOpenMetricsText(),
-# the format selector picks which one openmetrics calls.
-logoscore --config-dir /var/lib/logos/config call openmetrics start '{"port":{{ logos_node_metrics_port }},"modules":[{% for module in logos_node_modules %}{"name":"{{ module }}","format":"{{ "text" if module in logos_node_metrics_text_modules else "data" }}"}{{ "," if not loop.last }}{% endfor %}]}' || echo "WARNING: failed to start openmetrics"
+logosctl call openmetrics start '{"port":{{ logos_node_metrics_port }},"modules":[{% for module in logos_node_modules %}{"name":"{{ module }}","format":"{{ "text" if module in logos_node_metrics_text_modules else "data" }}"}{{ "," if not loop.last }}{% endfor %}]}' || echo "WARNING: failed to start openmetrics"
 {% endif %}
 
 wait $DAEMON_PID

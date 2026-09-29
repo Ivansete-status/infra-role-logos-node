@@ -1,6 +1,6 @@
 # Description
 
-This role provisions a [Logos Node](https://github.com/logos-co/logos-liblogos) running `logoscore` with configurable modules. It deploys a containerized Logos Node via Docker Compose with support for module loading, Consul service registration, and container monitoring.
+This role provisions a [Logos Node](https://github.com/logos-co/logos-liblogos) running `logctl` with configurable modules. It deploys a containerized Logos Node via Docker Compose with support for module loading, Consul service registration, and container monitoring.
 
 Three modules are supported, each with its own config template, node info query and Consul service registration:
 
@@ -111,8 +111,8 @@ Which will use the `docker-compose.yml` file in that directory.
 
 Node info can be queried directly from a running module:
 ```
-docker exec logos-node logoscore --config-dir /var/lib/logos/config call delivery_module getAvailableNodeInfoIDs
-docker exec logos-node logoscore --config-dir /var/lib/logos/config call delivery_module getNodeInfo MyPeerId
+docker exec logos-node logctl --config-dir /var/lib/logos/config call delivery_module getAvailableNodeInfoIDs
+docker exec logos-node logctl --config-dir /var/lib/logos/config call delivery_module getNodeInfo MyPeerId
 ```
 # Requirements
 
