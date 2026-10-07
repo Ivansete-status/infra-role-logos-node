@@ -15,6 +15,13 @@
     group: '{{ logos_node_host_uid }}'
     mode: 0644
 
+- name: Check libp2p_module key
+  assert:
+    that: logos_node_libp2p_key is defined
+    fail_msg: 'Kademlia in libp2p_module needs logos_node_libp2p_key, otherwise the peer id changes on every restart'
+    quiet: true
+  when: logos_node_delivery_plugin_kad_discovery | bool
+
 - name: Create libp2p config file
   register: logos_node_delivery_libp2p_config
   template:
