@@ -85,6 +85,10 @@ logos_node_delivery_kad_bootstrap_nodes: []
 #   false - in-process in the delivery node, set by logos_node_delivery_kad_discovery.
 logos_node_delivery_plugin_kad_discovery: false
 logos_node_libp2p_tcp_port: 30304
+# libp2p_module key, required when the plugin is on (asserted in tasks/delivery/config.yml).
+# Set it per host, e.g. from vault, so the peer id stays the same across restarts.
+# Hex protobuf secp256k1 key: '08021220' followed by 32 random bytes, generated with:
+#   echo "08021220$(openssl rand -hex 32)"
 #logos_node_libp2p_key: ''
 
 # RLN
