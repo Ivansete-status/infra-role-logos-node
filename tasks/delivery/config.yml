@@ -23,7 +23,7 @@
     owner: '{{ logos_node_host_uid }}'
     group: '{{ logos_node_host_uid }}'
     mode: 0644
-  when: logos_node_delivery_plugin_kad_discovery | bool
+  when: logos_node_delivery_plugin_kad_discovery_enabled | bool
 
 - name: Check RLN settings
   assert:
