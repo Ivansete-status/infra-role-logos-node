@@ -81,8 +81,8 @@ logos_node_delivery_kad_bootstrap_nodes: []
 
 # Run Kademlia in libp2p_module (own port and key) instead of in-process.
 # Bootstrap nodes must then be other nodes' libp2p_module addresses.
-logos_node_delivery_plugin_kad_discovery_enabled: false
-logos_node_delivery_plugin_kad_discovery_p2p_tcp_port: 30304
+logos_node_delivery_kad_discovery_plugin_enabled: false
+logos_node_delivery_kad_discovery_plugin_p2p_tcp_port: 30304
 # Mandatory when enabled. Keep it in vault, per host: 08021220 + 32 random hex bytes.
 #logos_node_libp2p_key: ~
 
