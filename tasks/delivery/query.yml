@@ -9,12 +9,32 @@
   failed_when: false
   loop: ['MyPeerId', 'MyMultiaddresses', 'MyENR', 'MyMixPubKey', 'Version']
 
+- name: Query libp2p module node info
+  when: logos_node_delivery_kad_discovery_plugin_enabled
+  shell: >
+    docker exec {{ logos_node_cont_name }}
+    logosctl
+    call libp2p_module getNodeInfo {{ item }}
+  register: logos_node_libp2p_info
+  changed_when: false
+  failed_when: false
+  loop: ['PeerId', 'Multiaddrs', 'Version']
+
 - name: Parse delivery node info
   set_fact:
     logos_node_delivery_query: >-
       {{ dict(logos_node_delivery_info.results
          | map(attribute='item') | list
          | zip(logos_node_delivery_info.results
+               | map(attribute='stdout') | list)) }}
+
+- name: Parse delivery node info
+  when: logos_node_delivery_kad_discovery_plugin_enabled
+  set_fact:
+    logos_node_libp2p_query: >-
+      {{ dict(logos_node_libp2p_info.results
+         | map(attribute='item') | list
+         | zip(logos_node_libp2p_info.results
                | map(attribute='stdout') | list)) }}
 
 - name: Get module versions
@@ -27,9 +47,16 @@
 
 - name: Set delivery node facts
   set_fact:
-    logos_node_peer_id: '{{ (logos_node_delivery_query.MyPeerId | from_json).result.value | default("none", true) }}'
-    logos_node_multiaddr: '{{ ((logos_node_delivery_query.MyMultiaddresses | from_json).result.value | default("") ).split(",") | select("search", "/dns4/") | first | default("none", true) }}'
-    logos_node_enr: '{{ (logos_node_delivery_query.MyENR | from_json).result.value | default("none", true) }}'
-    logos_node_mix_pub_key: '{{ ((logos_node_delivery_query.MyMixPubKey | from_json).result.value | default("") ) | regex_replace("^0x", "") | default("none", true) }}'
-    logos_node_delivery_lib_version: '{{ (logos_node_delivery_query.Version | from_json).result.value | default("none", true) }}'
-    logos_node_delivery_module_version: "{{ (logos_node_modules_list_raw.stdout | from_json) | selectattr('name', 'equalto', 'delivery_module') | map(attribute='version') | first | default('none') }}"
+    logos_node_peer_id:                 '{{ (logos_node_delivery_query.MyPeerId          | from_json).result.value | default("none", true) }}'
+    logos_node_multiaddr:               '{{ ((logos_node_delivery_query.MyMultiaddresses | from_json).result.value | default("") ).split(",") | select("search", "/dns4/") | first | default("none", true) }}'
+    logos_node_enr:                     '{{ (logos_node_delivery_query.MyENR             | from_json).result.value | default("none", true) }}'
+    logos_node_mix_pub_key:             '{{ ((logos_node_delivery_query.MyMixPubKey      | from_json).result.value | default("") ) | regex_replace("^0x", "") | default("none", true) }}'
+    logos_node_delivery_lib_version:    '{{ (logos_node_delivery_query.Version           | from_json).result.value | default("none", true) }}'
+    logos_node_delivery_module_version: '{{ (logos_node_modules_list_raw.stdout          | from_json) | selectattr("name", "equalto", "delivery_module") | map(attribute="version") | first | default("none") }}'
+
+- name: Set delivery node facts
+  when: logos_node_delivery_kad_discovery_plugin_enabled
+  set_fact:
+    logos_node_libp2p_peer_id:          '{{ (logos_node_libp2p_query.PeerId              | from_json).result.value | default("none", true) }}'
+    logos_node_libp2p_multiaddr:        '{{ (logos_node_libp2p_query.Multiaddrs          | from_json).result.value | default("") | select("search", "/ip4/") | first | default("none", true) }}'
+    logos_node_libp2p_module_version:   '{{ (logos_node_modules_list_raw.stdout          | from_json) | selectattr("name", "equalto", "libp2p_module")   | map(attribute="version") | first | default("none") }}'
